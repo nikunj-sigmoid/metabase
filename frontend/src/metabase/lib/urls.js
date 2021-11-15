@@ -98,6 +98,10 @@ export function newQuestion({ mode, ...options } = {}) {
   }
 }
 
+export function dataset(...args) {
+  return question(...args);
+}
+
 export function dashboard(dashboard, { addCardWithId, editMode } = {}) {
   const options = {
     ...(addCardWithId ? { add: addCardWithId } : {}),
