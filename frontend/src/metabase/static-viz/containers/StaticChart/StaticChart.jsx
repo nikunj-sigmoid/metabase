@@ -10,6 +10,7 @@ import TimeSeriesBarChart from "../../components/TimeSeriesBarChart";
 import TimeSeriesLineChart from "../../components/TimeSeriesLineChart";
 import ProgressBar from "../../components/ProgressBar";
 import TimeSeriesWaterfallChart from "../../components/TimeSeriesWaterfallChart";
+import TimeSeriesMultiChart from "../../components/TimeSeriesMultiChart";
 
 const propTypes = {
   type: PropTypes.oneOf([
@@ -23,6 +24,7 @@ const propTypes = {
     "timeseries/line",
     "timeseries/waterfall",
     "progress",
+    "timeseries/multiple",
   ]).isRequired,
   options: PropTypes.object.isRequired,
 };
@@ -49,6 +51,8 @@ const StaticChart = ({ type, options }) => {
       return <TimeSeriesWaterfallChart {...options} />;
     case "progress":
       return <ProgressBar {...options} />;
+    case "timeseries/multiple":
+      return <TimeSeriesMultiChart {...options} />;
   }
 };
 

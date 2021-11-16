@@ -45,7 +45,6 @@ const layout = {
   },
   colors: {
     brand: "#509ee3",
-    brandLight: "#DDECFA",
     textLight: "#b8bbc3",
     textMedium: "#949aab",
   },
@@ -55,6 +54,7 @@ const layout = {
   labelPadding: 12,
   areaOpacity: 0.2,
   strokeDasharray: "4",
+  fillOpacity: 0.2,
 };
 
 const TimeSeriesAreaChart = ({ data, accessors, settings, labels }) => {
@@ -94,8 +94,8 @@ const TimeSeriesAreaChart = ({ data, accessors, settings, labels }) => {
       <AreaClosed
         data={data}
         yScale={yScale}
-        fill={palette.brand}
-        opacity={layout.areaOpacity}
+        fill={layout.colors.brand}
+        opacity={layout.fillOpacity}
         x={d => xScale(accessors.x(d))}
         y={d => yScale(accessors.y(d))}
       />
