@@ -1,4 +1,10 @@
-import { restore, modal, popover, visualize } from "__support__/e2e/cypress";
+import {
+  restore,
+  modal,
+  popover,
+  sidebar,
+  visualize,
+} from "__support__/e2e/cypress";
 
 describe("scenarios > datasets", () => {
   beforeEach(() => {
@@ -256,6 +262,29 @@ describe("scenarios > datasets", () => {
       });
 
       cy.url().should("not.include", "/question/1");
+    });
+
+    it("can edit dataset info", () => {
+      cy.intercept("PUT", "/api/card/1").as("updateCard");
+      cy.visit("/question/1");
+
+      openDetailsSidebar();
+      sidebar().within(() => {
+        cy.icon("pencil").click();
+      });
+      modal().within(() => {
+        cy.findByLabelText("Name")
+          .clear()
+          .type("D1");
+        cy.findByLabelText("Description")
+          .clear()
+          .type("Some helpful dataset description");
+        cy.button("Save").click();
+      });
+      cy.wait("@updateCard");
+
+      cy.findByText("D1");
+      cy.findByText("Some helpful dataset description");
     });
   });
 });
