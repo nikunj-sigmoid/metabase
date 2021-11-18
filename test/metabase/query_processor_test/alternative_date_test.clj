@@ -174,7 +174,7 @@
 (deftest iso-8601-text-fields
   (testing "text fields with semantic_type :type/ISO8601DateTimeString"
     (testing "return as dates"
-      (mt/test-drivers (disj (sql-jdbc.tu/sql-jdbc-drivers) :sqlite :oracle :sparksql)
+      (mt/test-drivers (disj (sql-jdbc.tu/sql-jdbc-drivers) :firebolt :sqlite :oracle :sparksql)
         (is (= [[1 "foo" #t "2004-10-19T10:23:54" #t "2004-10-19" #t "10:23:54"]
                 [2 "bar" #t "2008-10-19T10:23:54" #t "2008-10-19" #t "10:23:54"]
                 [3 "baz" #t "2012-10-19T10:23:54" #t "2012-10-19" #t "10:23:54"]]
@@ -183,6 +183,16 @@
                           (qp/process-query
                             (assoc (mt/mbql-query times)
                                    :middleware {:format-rows? false})))))))
+      (testing "firebolt returns time as string"
+        (mt/test-drivers #{:firebolt}
+          (is (= #{[1 "foo" #t "2004-10-19T10:23:54" #t "2004-10-19" "10:23:54"]
+                [2 "bar" #t "2008-10-19T10:23:54" #t "2008-10-19" "10:23:54"]
+                [3 "baz" #t "2012-10-19T10:23:54" #t "2012-10-19" "10:23:54"]}
+               ;; string-times dataset has three text fields, ts, d, t for timestamp, date, and time
+                 (set (mt/rows (mt/dataset string-times
+                          (qp/process-query
+                            (assoc (mt/mbql-query times)
+                                   :middleware {:format-rows? false})))))))))
       (testing "sparksql adds UTC"
         (mt/test-drivers #{:sparksql}
           (is (= #{[1 "foo" #t "2004-10-19T10:23:54Z[UTC]" #t "2004-10-19T00:00Z[UTC]"]
@@ -216,13 +226,13 @@
     (testing "are queryable as dates"
       (testing "a datetime field"
         ;; TODO: why does this fail on oracle? gives a NPE
-        (mt/test-drivers (disj (sql-jdbc.tu/sql-jdbc-drivers) :oracle :sparksql)
+        (mt/test-drivers (disj (sql-jdbc.tu/sql-jdbc-drivers) :oracle :sparksql :firebolt)
           (is (= 1
                  (count (mt/rows (mt/dataset string-times
                                    (mt/run-mbql-query times
                                      {:filter   [:= [:datetime-field $ts :day] "2008-10-19"]}))))))))
       (testing "a date field"
-        (mt/test-drivers (disj (sql-jdbc.tu/sql-jdbc-drivers) :oracle :sparksql)
+        (mt/test-drivers (disj (sql-jdbc.tu/sql-jdbc-drivers) :oracle :sparksql :firebolt)
           (is (= 1
                  (count (mt/rows (mt/dataset string-times
                                    (mt/run-mbql-query times

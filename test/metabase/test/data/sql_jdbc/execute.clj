@@ -24,6 +24,7 @@
       ;; Remove excess semicolons, otherwise snippy DBs like Oracle will barf
       (let [sql (str/replace sql #";+" ";")]
         (try
+          (println sql)
           (execute! (spec/dbdef->spec driver context dbdef) sql)
           (catch SQLException e
             (println "Error executing SQL:" sql)
