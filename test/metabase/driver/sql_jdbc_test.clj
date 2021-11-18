@@ -195,7 +195,7 @@
                  (spliced-count-of :checkins [:= $date "2014-03-05"]))))))
 
     ;; Oracle, Redshift, and SparkSQL don't have 'Time' types
-    (mt/test-drivers (disj (sql-jdbc.tu/sql-jdbc-drivers) :oracle :redshift :sparksql)
+    (mt/test-drivers (disj (sql-jdbc.tu/sql-jdbc-drivers) :oracle :redshift :sparksql :firebolt)
       (testing "splicing a time"
         (is (= 2
                (mt/dataset test-data-with-time
